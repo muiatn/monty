@@ -1,29 +1,29 @@
 #include "monty.h"
-#include <stddef.h>
-
+#include <string.h>
+#include <stdio.h>
 
 /**
- * stack_push - add on the stack
- * @stack: the stack
- * @n: An integer
+ * op_push - push on the stack
+ * @stack: The stack
+ * @line_number: the line number
  *
- * Return: The new created stack element
+ * Return: void
  */
-stack_t *stack_push(stack_t **stack, int n)
+void op_push(stack_t **stack, unsigned int line_number)
 {
-	stack_t *e = NULL;
+	char *arg = strtok(NULL, " ");
 
-	e = new_stack_t(n);
+	if (!is_int(arg))
+	{
+		fprintf(stderr, "L%d: usage: push integer\n", line_number);
+		free_stack(stack);
+		exit(EXIT_FAILURE);
+	}
 
-	if (e == NULL)
-		return (NULL);
-
-	e->next = *stack;
-
-	if (*stack)
-		(*stack)->prev = e;
-
-	*stack = e;
-
-	return (e);
+	if (stack_push(stack, atoi(arg)) == NULL)
+	{
+		fprintf(stderr, "Error: malloc failed\n");
+		free_stack(stack);
+		exit(EXIT_FAILURE);
+	}
 }
